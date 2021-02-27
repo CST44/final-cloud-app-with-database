@@ -28,6 +28,7 @@ class QuestionAdmin(admin.ModelAdmin):
 
 class ChoiceAdmin(admin.ModelAdmin):
     list_display = ['texte', 'is_correct']
+
 class LessonAdmin(admin.ModelAdmin):
     list_display = ['id', 'course', 'order', 'title']
     #def get_queryset(self, request):

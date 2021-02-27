@@ -133,7 +133,7 @@ class Choice(models.Model):
     texte = models.CharField(max_length=250, default="")
     is_correct = models.BooleanField(default=False)
     def __str__(self):
-        return '('+self.question.lesson.course.name+'.'+str(self.question.lesson.order)+') ['\
+        return '('+self.question.lesson.course.name+'.'+str(self.question.lesson.title)+') ['\
             +str(self.question.texte)+'] --> '+self.texte
 
 # <HINT> The submission model

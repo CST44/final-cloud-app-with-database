@@ -42,13 +42,84 @@
     <!-- Page content -->
     <div class="container-fluid">
             <h2>{{ course.name }}</h2>
-            <div class="card-columns-vertical">
+            <div clxass="card-columns-vertical">
                 {% for lesson in course.lesson_set.all %}
-                    <div class="card mt-1">
-                        <div class="card-header"><h5>Lesson {{lesson.order|add:1}}: {{lesson.title}}</h5></div>
-                        <div class="card-body">{{lesson.content}}</div>
+                    <div class="card">
+                        <div class="card-header">
+                            <span><h5>Lesson {{lesson.order|add:0}}: {{lesson.title}}</h5></span>
+                        </div>
+                        <div class="card-body">
+                            <div>{{lesson.content}}
+                                {% if user.is_authenticated %}
+                                <br><button data-toggle="collapse" data-target="#exam{{lesson.id}}">Show/Hide Questions</button>
+                                {% endif %}
+                            </div><br>
+                            {% if not user.is_authenticated %}
+                                <div class='alert-info'>Only authenticated user can view Exam Questions</div> 
+                            {% endif %}
+                        </div>
+                        <div id="exam{{lesson.id}}" class="collapse">
+                            <div class="card-header">
+                                <form id="questionform" action="point to a submit view" method="post">
+                                    {% for question in lesson.question_set.all %}
+                                            <div class="card body">
+                                                <div class="card-header"><h5>{{question.texte}}</h5></div>
+                                                {% csrf_token %}
+                                                <div class="form-group">
+                                                    {% for choice in question.choice_set.all %}
+                                                        <div class="form-check">
+                                                            <label class="mr-sm-2">&nbsp;</label>
+                                                                <input type="checkbox" name="choice_{{choice.id}}"
+                                                                    class="mr-sm-2" id="{{choice.id}}"
+                                                                    value="{{choice.id}}">{{ choice.texte }}
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                    {% endfor %}
+                                    <input class="btn btn-success btn-block" type="submit" value="Submit">
+                                </form> 
+                            </div>
+                        </div>
                     </div>
                 {% endfor %}
+                    <!-- A choice submission form example
+            </div>
+            <br>
+            {% if not user.is_authenticated %}
+                <div>Only authenticated user can view Exam Questions</div> 
+            {% else %}
+                <button data-toggle="collapse" data-target="#exam">Show/Hide Questions</button>
+            {% endif %}
+            <div id="exam" class="colsslapse">
+                {% for lesson in course.lesson_set.all %}
+                    <div class="card"><h5>Lesson {{lesson.order|add:1}}: {{lesson.title}}</h5>
+                        <form id="questionform" action="point to a submit view" method="post">
+                            {% for question in lesson.question_set.all %}
+                                <div class="card-header" width='50%'><h5>Question : {{question.texte}}</h5></div>
+                                {% for choice in question.choice_set.all %}
+                                    <div class="card mt-2">
+                                        {% csrf_token %}
+                                        <div class="card-detail"><input type=checkbox></div>
+                                        <div class="card-detail"><h6>{{ choice.texte}}</h6></div>
+                                        <div class="form-group">
+                                        ... for each choice in the question ...
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" name="choice_{{choice.id}}"
+                                                        class="form-check-input" id="{{choice.id}}"
+                                                        value="{{choice.id}}">{{ choice.choice_text }}
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <input class="btn btn-success btn-block" type="submit" value="Submit">
+                                {% endfor %}
+                        {% endfor %}
+                        </form>
+                    </div>        
+                {% endfor %}
+
             </div>
             <!-- Task: show questions and choices -->
             <!-- <HINT> Use Bootstrap Collapse to hide exam first, more details could be found here
@@ -59,7 +130,7 @@
             A collapse example here:
             <div id="exam" class="collapse">
                 Click to expand elements within the collapse div
-                </div>
+            </div>
 
             -->
 
