@@ -27,7 +27,7 @@ class QuestionAdmin(admin.ModelAdmin):
     list_filter = ['lesson']
 
 class ChoiceAdmin(admin.ModelAdmin):
-    list_display = ['texte', 'is_correct']
+    list_display = ['id', 'texte', 'is_correct']
 
 class LessonAdmin(admin.ModelAdmin):
     list_display = ['id', 'course', 'order', 'title']
@@ -42,4 +42,4 @@ admin.site.register(Lesson, LessonAdmin)
 admin.site.register(Instructor)
 admin.site.register(Learner)
 admin.site.register(Question, QuestionAdmin)
-admin.site.register(Choice) #, ChoiceAdmin)
+admin.site.register(Choice, ChoiceAdmin)

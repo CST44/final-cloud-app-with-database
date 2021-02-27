@@ -51,16 +51,17 @@
                         <div class="card-body">
                             <div>{{lesson.content}}
                                 {% if user.is_authenticated %}
-                                <br><button data-toggle="collapse" data-target="#exam{{lesson.id}}">Show/Hide Questions</button>
+                                <!--br><button data-toggle="collapse" data-target="#exam{{lesson.id}}">Show/Hide Questions</button-->
+                                <br><button data-toggle="collapse" data-target="#exam">Show/Hide Questions</button>
                                 {% endif %}
                             </div><br>
                             {% if not user.is_authenticated %}
                                 <div class='alert-info'>Only authenticated user can view Exam Questions</div> 
                             {% endif %}
                         </div>
-                        <div id="exam{{lesson.id}}" class="collapse">
+                        <div id="exam" class="collapse">
                             <div class="card-header">
-                                <form id="questionform" action="point to a submit view" method="post">
+                                <form id="questionform" action="submit/" method="post">
                                     {% for question in lesson.question_set.all %}
                                             <div class="card body">
                                                 <div class="card-header"><h5>{{question.texte}}</h5></div>
