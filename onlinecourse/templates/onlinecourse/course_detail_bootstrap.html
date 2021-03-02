@@ -9,7 +9,7 @@
     <meta charset="UTF-8">
 </head>
 
-<body>
+<body onload="javascript:$ ('.collap').collapse('hide')">
     <!-- Navigation bar -->
     <nav class="navbar navbar-light bg-light">
         <div class="container-fluid">
@@ -40,28 +40,34 @@
     </nav>
 
     <!-- Page content -->
-    <div class="container-fluid">
-            <h2>{{ course.name }}</h2>
+    <div class="container">
+        <div cclass="card-deck">
+            <h2>Course : {{ course.name }}</h2>
+        </div>
+        <div  clacss="card-deck">
+            {% if user.is_authenticated %}
+                <!--button data-toggle="collapse" data-target="#exam">Show/Hide Questions</button-->
+                <button onclick="$('.collapse').collapse('hide'); $('.collap').collapse('show')" class="collapse">
+                    Hide Questions</button>
+                <button onclick="$('.collapse').collapse('show');$ ('.collap').collapse('hide')" class="collap">
+                    Show Questions</button>
+            {% else %}
+                <div class='alert-info'>Only authenticated user can view Exam Questions</div> 
+            {% endif %}
+        </div><br>
+        {% if user.is_authenticated %}
+            <form id="questionform" action="submit/" method="post">
+        {% endif %}
+        <div class="container-fluid">
             <div clxass="card-columns-vertical">
                 {% for lesson in course.lesson_set.all %}
                     <div class="card">
                         <div class="card-header">
                             <span><h5>Lesson {{lesson.order|add:0}}: {{lesson.title}}</h5></span>
                         </div>
-                        <div class="card-body">
-                            <div>{{lesson.content}}
-                                {% if user.is_authenticated %}
-                                <!--br><button data-toggle="collapse" data-target="#exam{{lesson.id}}">Show/Hide Questions</button-->
-                                <br><button data-toggle="collapse" data-target="#exam">Show/Hide Questions</button>
-                                {% endif %}
-                            </div><br>
-                            {% if not user.is_authenticated %}
-                                <div class='alert-info'>Only authenticated user can view Exam Questions</div> 
-                            {% endif %}
-                        </div>
-                        <div id="exam" class="collapse">
-                            <div class="card-header">
-                                <form id="questionform" action="submit/" method="post">
+                        <div>{{lesson.content}}</div><br>
+                        {% if user.is_authenticated %}
+                            <div id="exam" class="card-header collapse">
                                     {% for question in lesson.question_set.all %}
                                             <div class="card body">
                                                 <div class="card-header"><h5>{{question.texte}}</h5></div>
@@ -78,12 +84,15 @@
                                                 </div>
                                             </div>
                                     {% endfor %}
-                                    <input class="btn btn-success btn-block" type="submit" value="Submit">
-                                </form> 
                             </div>
-                        </div>
+                        {% endif %}
                     </div>
                 {% endfor %}
+        </div><br>
+        <div id="exam" class="collapse">
+                <input class="btn btn-success btn-block" type="submit" value="Submit">
+            </form> 
+        </div><br>
                     <!-- A choice submission form example
             </div>
             <br>
@@ -170,5 +179,6 @@
             <!--Check here to see more details Bootstrap checkbox
              https://www.w3schools.com/bootstrap4/bootstrap_forms_inputs.asp-->
     </div>
+<script>$ ('.collap').collapse('hide')</script>
 </body>
 </html>
