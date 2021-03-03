@@ -36,23 +36,59 @@
 </nav>
 
 <div class="container-fluid">
-    {% for subm in Submission.objects.get(id=submission) %}
-        <div>tototo</div>
-    {% endfor %}
     {% if grade > 80 %}
         <div class="alert alert-success">
-        <!--HINT Display passed info -->
+            <b>Congratulations !!</b> You've scored {{subG}} / {{maxG}} ({{grade}} %)
         </div>
     {% else %}
         <div class="alert alert-danger">
-            <!--HINT Display failed info -->
+            <b>Bad news !!</b> You've scored {{grade}} %
         </div>
-        <a class="btn btn-link text-danger" href="{#% #url 'onlinecourse:course_details' course.id #%}">Re-test</a>
+        <a class="btn btn-link text-danger" href="{% url 'onlinecourse:course_details' course_id %}">Re-test</a>
     {% endif %}
-    <div class="card-columns-vertical mt-1">
-        <h5 class="">Exam results</h5>
-            <!--HINT Display exam results-->
-    </div>
+        <div class="container">
+            <h5 class="">Exam results</h5>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Question</th>
+                        <th>Your score</th>
+                        <th>Your answers</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for questListe in questions %}
+                        <tr><td>{{questListe.1}}</td>
+                            <td>{{questListe.2}} / {{questListe.3}}</td>
+                            <td>
+                                {% for choice in choices %}
+                                    {% if questListe.0 == choice.0 %}
+                                        <div class="alert {{choice.2}}">{{choice.1}}</div>
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>            
+        </div>
+        <!--div class="container">
+            <h5 class="">Your Answers</h5>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Question</th>
+                        <th>Your score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for choice in choices %}
+                        <tr><td>{{choice}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>            
+        </div-->
     </div>
 </body>
 </html>

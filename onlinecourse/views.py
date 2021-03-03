@@ -133,13 +133,37 @@ def show_exam_result(request, course_id, submission_id):
     context ["course"]=course_id
     context ["submission"]=submission_id
     submission = Submission.objects.get(id=submission_id)
-    choicess = submission.choices.all()
 
-    grade = 0
+    choices = []
+    for choice in submission.choices.all():
+        if choice.is_correct:
+            couleur='alert-success'
+        else:
+            couleur='alert-danger'
+        choices.append([choice.question.id,choice.texte,couleur])
+    allQuestions = []
+    submissionGrade = 0
+    maxGrade = 0
     lessons = Lesson.objects.filter(course=course_id)
     for lesson in lessons:
-        for question in Question.objects.filter(lesson=lesson.id):
-            grade = grade + question.grade
+        questions = Question.objects.filter(lesson=lesson.id)
+        for question in questions:
+            maxGrade = maxGrade + question.grade
+            note = 0
+            if question.is_get_score(submission.choices.all()):
+                note = question.grade
+                submissionGrade = submissionGrade + question.grade
+            allQuestions.append([question.id,question.texte,question.grade,note])
+            
+    grade = round(submissionGrade/maxGrade*100)
+    context = {
+        'grade':    grade,
+        'subG':     submissionGrade,
+        'maxG':     maxGrade,
+        'choices':  choices,
+        'course_id':  course_id,
+        'questions':  allQuestions,
+    }
     return render(request, 'onlinecourse/exam_result_bootstrap.html', context)
 
 
@@ -155,6 +179,4 @@ class CourseListView(generic.ListView):
             if user.is_authenticated:
                 course.is_enrolled = check_if_enrolled(user, course)
         return courses
-
-
 
